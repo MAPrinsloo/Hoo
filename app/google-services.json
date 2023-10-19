@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215068934168",
+    "project_id": "hoo-birddoc",
+    "storage_bucket": "hoo-birddoc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215068934168:android:5db241213c8a2fffb9836d",
+        "android_client_info": {
+          "package_name": "vc.hoo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5zDOAvf4yq-73ud-62b0ALKRIwIrzDtY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AchievementsActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/mtAchievements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_theme_light_surfaceVariant"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:menu="@menu/top_app_bar"
+        app:navigationIcon="@drawable/menu_24px"
+        app:title="@string/Achievements"
+        app:titleCentered="true" />
+
+    <FrameLayout
+        android:id="@+id/flMenuSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mtAchievements"
+        android:visibility="gone">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvMenuFrag"
+            android:name="vc.hoo.MenuFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_menu" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flAccountSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/flMenuSideSheet"
+        android:visibility="gone">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvAccountFrag"
+            android:name="vc.hoo.AccountFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:layout="@layout/fragment_account" />
+    </FrameLayout>
+</RelativeLayout>

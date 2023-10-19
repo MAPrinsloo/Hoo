@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    tools:context=".SettingsAndStatsActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/mtSettingsAndStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_theme_light_surfaceVariant"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:menu="@menu/top_app_bar"
+        app:navigationIcon="@drawable/menu_24px"
+        app:title="@string/SettingsAndStats"
+        app:titleCentered="true" />
+
+    <LinearLayout
+        android:id="@+id/linVertSettings"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mtSettingsAndStats"
+        android:layout_centerHorizontal="true"
+        android:divider="@drawable/divider"
+        android:orientation="vertical"
+        android:showDividers="end">
+
+        <TextView
+            android:id="@+id/tvSettings"
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/GeneralMarginTop"
+            android:text="@string/Settings" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvMetric"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Metric" />
+
+            <CheckBox
+                android:id="@+id/cbMetric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:checked="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvImperial"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Imperial" />
+
+            <CheckBox
+                android:id="@+id/cbImperial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMaxDistance"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:hint="@string/MaxTravelDistance"
+            app:errorEnabled="true"
+            app:startIconDrawable="@drawable/edit_icon"
+            app:suffixText="Km">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietMaxDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/SaveSettings" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linVertStats"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linVertSettings"
+        android:layout_centerHorizontal="true"
+        android:divider="@drawable/divider"
+        android:orientation="vertical"
+        android:showDividers="end">
+
+        <TextView
+            android:id="@+id/tvStats"
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/Statistics" />
+
+        <TextView
+            android:id="@+id/tvMostSpotted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/MostSpottedBird"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTotalBirds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/TotalBirdsSpotted"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLeastSpotted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/LeastSpottedBird"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flMenuSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mtSettingsAndStats"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.sidesheet.SideSheetBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvMenuFrag"
+            android:name="vc.hoo.MenuFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_menu" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flAccountSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/flMenuSideSheet"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.sidesheet.SideSheetBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvAccountFrag"
+            android:name="vc.hoo.AccountFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:layout="@layout/fragment_account" />
+    </FrameLayout>
+
+</RelativeLayout>

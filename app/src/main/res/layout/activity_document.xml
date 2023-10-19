@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".data.DocumentActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/mtDocument"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/md_theme_light_surfaceVariant"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:menu="@menu/top_app_bar"
+        app:navigationIcon="@drawable/menu_24px"
+        app:title="@string/Document"
+        app:titleCentered="true" />
+
+    <LinearLayout
+        android:id="@+id/linVertCapture"
+        android:layout_below="@id/mtDocument"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilBirdName"
+            android:layout_width="@dimen/TextInpuLayoutWidth"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:hint="@string/BirdName"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/md_theme_light_primary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietBirdName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/md_theme_light_onSurface" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNumBirds"
+            android:layout_width="@dimen/TextInpuLayoutWidth"
+            android:layout_height="wrap_content"
+            android:hint="@string/Num_of_birds"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/md_theme_light_primary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietNumBirds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/md_theme_light_onSurface" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/ibtnPhoto"
+            android:layout_width="@dimen/TextInpuLayoutWidth"
+            android:layout_height="@dimen/TextInpuLayoutWidth"
+            android:scaleType="fitXY"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <Button
+            android:id="@+id/btnCapture"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:elevation="4dp"
+            android:text="@string/Capture" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flMenuSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mtDocument"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.sidesheet.SideSheetBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvMenuFrag"
+            android:name="vc.hoo.MenuFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_menu" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/flAccountSideSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/flMenuSideSheet"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.sidesheet.SideSheetBehavior">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fcvAccountFrag"
+            android:name="vc.hoo.AccountFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:layout="@layout/fragment_account" />
+    </FrameLayout>
+
+</RelativeLayout>

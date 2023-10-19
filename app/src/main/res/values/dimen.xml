@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="TextInpuLayoutWidth">210dp</dimen>\
+    <dimen name="ButtonWidth">100dp</dimen>
+    <dimen name="MapHeight">350dp</dimen>
+    <dimen name="GeneralMarginTop">50dp</dimen>
+</resources>

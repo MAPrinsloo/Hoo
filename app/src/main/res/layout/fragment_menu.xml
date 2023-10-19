@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/md_theme_light_inverseOnSurface"
+    tools:context=".MenuFragment">
+
+    <LinearLayout
+        android:id="@+id/linVertMenu"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:divider="@drawable/divider"
+        android:orientation="vertical"
+        android:showDividers="end">
+
+        <TextView
+            android:id="@+id/tvActivityMenu"
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ActivityMenu" />
+
+        <Button
+            android:id="@+id/btnMenuDocument"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Document"
+            android:textAlignment="textStart"
+            android:textColor="@color/md_theme_light_onSurface"
+            app:icon="@drawable/document_icon"
+            app:iconTint="@color/md_theme_light_onSurface" />
+
+        <Button
+            android:id="@+id/btnMenuNavigate"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Navigate"
+            android:textAlignment="textStart"
+            android:textColor="@color/md_theme_light_onSurface"
+            app:icon="@drawable/navigation_icon"
+            app:iconTint="@color/md_theme_light_onSurface" />
+
+        <Button
+            android:id="@+id/btnMenuHistory"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/History"
+            android:textAlignment="textStart"
+            android:textColor="@color/md_theme_light_onSurface"
+            app:icon="@drawable/history_icon"
+            app:iconTint="@color/md_theme_light_onSurface" />
+
+    </LinearLayout>
+</FrameLayout>
