@@ -26,6 +26,7 @@ import androidx.core.view.isVisible
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.gson.GsonBuilder
@@ -267,6 +268,12 @@ class NavigateActivity : AppCompatActivity() {
             }
         }
         //--------------------------------------------------------------------------------------------//
+        //
+        NavigateBinding.msMapView.setOnClickListener()
+        {
+            LoadCurrentLocation(NavigateBinding);
+        }
+        //--------------------------------------------------------------------------------------------//
         //ibtnCenterOnUser click
         NavigateBinding.ibtnCenterOnUser.setOnClickListener()
         {
@@ -407,12 +414,8 @@ class NavigateActivity : AppCompatActivity() {
     }
     //--------------------------------------------------------------------------------------------//
     //Adds a marker to the map using lng and lat
-    private fun addAnnotationToMap(isUser: Boolean, lng: Double, lat: Double) {
-        var marker = R.drawable.red_marker
-        if (isUser == true) {
-            marker = R.drawable.user_map_icon
-        }
-        bitmapFromDrawableRes(this@NavigateActivity, marker)?.let {
+    private fun addAnnotationToMap(lng: Double, lat: Double, markerDrawable: Int) {
+        bitmapFromDrawableRes(this@NavigateActivity, markerDrawable)?.let {
             val annotationApi = mapView?.annotations
             val pointAnnotationManager = annotationApi?.createPointAnnotationManager()
             val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
@@ -475,10 +478,42 @@ class NavigateActivity : AppCompatActivity() {
                     birdNavObject.Lng = lngTemp
 
                     BirdNavPointList.add(birdNavObject)
-                    addAnnotationToMap(false, lngTemp, latTemp)
+                    addAnnotationToMap(lngTemp, latTemp, R.drawable.red_marker)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
+            }
+        }
+    }
+    //--------------------------------------------------------------------------------------------//
+    //
+    fun AddObservationMarkers() {
+        BirdNavPointList.clear()
+        var arrDbEntries = arrayListOf<String>()
+
+        //Firebase directory
+        val historyCollection = db.collection("/$Username/user_details/history/")
+        historyCollection.get().addOnSuccessListener { querySnapshot ->
+            for (document in querySnapshot) {
+                arrDbEntries.add(document.id)
+            }
+            for (entryID in arrDbEntries) {
+                val entryIdRef = historyCollection.document(entryID)
+
+                entryIdRef.get().addOnSuccessListener { documentSnapshot ->
+                    val entry = documentSnapshot.data
+
+                    if (entry != null) {
+                        val birdNavObject = BirdNavPoints()
+                        val birdGeoPoint = (entry["coordinates"] as? GeoPoint ?: GeoPoint(0.0,0.0))
+                        var tempGeoPoint: GeoPoint = birdGeoPoint
+                        birdNavObject.Lat = tempGeoPoint.latitude
+                        birdNavObject.Lng = tempGeoPoint.longitude
+
+                        BirdNavPointList.add(birdNavObject)
+                        addAnnotationToMap(tempGeoPoint.longitude, tempGeoPoint.latitude, R.drawable.bird_map_icon)
+                    }
+                }
             }
         }
     }
@@ -536,10 +571,10 @@ class NavigateActivity : AppCompatActivity() {
                                         } catch (e: Exception) {
                                             return@thread
                                         }
-                                        runOnUiThread { consumeJson(hotspot) }
+                                        runOnUiThread { if (NavigateBinding.msMapView.isChecked){AddObservationMarkers()}else{ consumeJson(hotspot)} }
                                     }
                                     //add user location to map
-                                    addAnnotationToMap(true, location.longitude, location.latitude)
+                                    addAnnotationToMap(location.longitude, location.latitude, R.drawable.user_map_icon)
                                     //user location is also the origin location
                                     originLocation.longitude = location.longitude
                                     originLocation.latitude = location.latitude
