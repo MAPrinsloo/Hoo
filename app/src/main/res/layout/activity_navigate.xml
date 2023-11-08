@@ -19,11 +19,44 @@
         app:title="@string/Navigate"
         app:titleCentered="true" />
 
+    <LinearLayout
+        android:id="@+id/linHoriNavigate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mtNavigate"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSwitchUnchecked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/Hotspot" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/msMapView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:checked="false"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tvSwitchChecked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/BirdsObservations" />
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cnstMap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/mtNavigate">
+        android:layout_below="@id/linHoriNavigate">
 
         <com.mapbox.maps.MapView
             android:id="@+id/mvMap"
@@ -37,10 +70,9 @@
             android:id="@+id/ibtnCenterOnUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             android:src="@android:drawable/ic_menu_mylocation"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

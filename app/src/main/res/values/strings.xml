@@ -38,6 +38,8 @@
     <string name="SignOut">Sign Out</string>
     <string name="SaveSettings">Save Settings</string>
     <string name="mapbox_access_token">pk.eyJ1IjoicG1vbmV5IiwiYSI6ImNsbWtodXJtZjAyYnIyaWw4MTJkMGljcjAifQ.Mh08MpxLsPdflc-ddnT53g</string>
+    <string name="Hotspot">Bird Hotspots</string>
+    <string name="BirdsObservations">Birds Observations</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
