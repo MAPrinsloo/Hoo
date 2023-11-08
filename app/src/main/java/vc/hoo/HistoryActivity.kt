@@ -143,6 +143,7 @@ class HistoryActivity : AppCompatActivity() {
         return bitmap
     }
 
+
     //----------------------------------------------------------------------------------------//
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
@@ -154,6 +155,12 @@ class HistoryActivity : AppCompatActivity() {
             vc.hoo.R.anim.slide_out_left
         )
     }
+
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
+
+
 }
 /*
 References

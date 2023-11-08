@@ -3,14 +3,18 @@ package vc.hoo
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Email
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import vc.hoo.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
     //binding
     lateinit var SignUpBinding: ActivitySignUpBinding
+    private lateinit var auth: FirebaseAuth
     //----------------------------------------------------------------------------------------//
     //OnCreate()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,6 +23,8 @@ class SignUpActivity : AppCompatActivity() {
         val SignUpView = SignUpBinding.root
         FirebaseApp.initializeApp(this)
         setContentView(SignUpView)
+        auth = FirebaseAuth.getInstance()
+
         //----------------------------------------------------------------------------------------//
         //back button click
         SignUpBinding.mtSignUp.setOnClickListener()
@@ -34,23 +40,14 @@ class SignUpActivity : AppCompatActivity() {
         //Create button click
         SignUpBinding.btnCreateAccount.setOnClickListener()
         {
+            var email = SignUpBinding.tietEmail.text.toString()
             var username = SignUpBinding.tietUsername.text.toString()
             var password = SignUpBinding.tietPassword.text.toString()
             var conPassword = SignUpBinding.tietConfirmPassword.text.toString()
 
-            if (ValidateInputs(username, password, conPassword, SignUpBinding) == true) {
-                CreateAccount(username, password, SignUpBinding)
-                val intent = Intent(this, DocumentActivity::class.java)
-                val sharedPref = getSharedPreferences("username", Context.MODE_PRIVATE)
-                val editor = sharedPref.edit()
-                editor.putString("username", username)
-                editor.apply()
-                intent.putExtra("username", username)
-                startActivity(intent)
-                overridePendingTransition(
-                    vc.hoo.R.anim.slide_in_right,
-                    vc.hoo.R.anim.slide_out_left
-                )
+            if (ValidateInputs(email,username, password, conPassword, SignUpBinding) == true)
+            {
+                SignUp(email, username, password)
             }
         }
     }
@@ -58,6 +55,7 @@ class SignUpActivity : AppCompatActivity() {
     //----------------------------------------------------------------------------------------//
     //Validate all user inputs
     private fun ValidateInputs(
+        Email: String,
         Username: String,
         Password: String,
         ConfirmPassword: String,
@@ -90,7 +88,10 @@ class SignUpActivity : AppCompatActivity() {
             Binding.tilConfirmPassword.error = "The passwords entered do not match"
             inputsAreValid = false
         }
-
+        if(Email.length == 0)
+        {
+            Binding.tilEmail.error = "Please enter an email address"
+        }
         return inputsAreValid
     }
 
@@ -98,9 +99,9 @@ class SignUpActivity : AppCompatActivity() {
     //Capture Method
     private fun CreateAccount(
         Username: String,
-        Password: String,
-        binding: ActivitySignUpBinding
-    ) {
+        Email: String,
+        binding: ActivitySignUpBinding)
+    {
         var least_spotted: String = ""
         var max_distance: Int = 2
         var metric: Boolean = true
@@ -119,7 +120,7 @@ class SignUpActivity : AppCompatActivity() {
                     "max_distance" to max_distance,
                     "metric" to metric,
                     "most_spotted" to most_spotted,
-                    "password" to Password,
+                    "email" to Email,
                     "total_spotted" to total_spotted
                 )
                 userDocRef.set(userData)
@@ -128,6 +129,33 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
+    //----------------------------------------------------------------------------------------//
+    //
+    private fun SignUp(email: String,username: String,password: String)
+    {
+        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                CreateAccount(username, email, SignUpBinding)
+                val sharedPref = getSharedPreferences("username", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                val intent = Intent(this, DocumentActivity::class.java)
+                editor.putString("username", username)
+                editor.apply()
+                intent.putExtra("username", username)
+                overridePendingTransition(
+                    vc.hoo.R.anim.slide_in_right,
+                    vc.hoo.R.anim.slide_out_left
+                )
+                startActivity(intent)
+                finish()
+            }
+        }.addOnFailureListener { exception ->
+            SignUpBinding.tilEmail.error = "Email already in use."
+        }
+    }
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
 }
 /*
 References

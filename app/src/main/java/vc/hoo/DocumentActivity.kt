@@ -30,7 +30,8 @@ import java.time.LocalDateTime
 //used in requesting geolocation permission from user
 private const val LOCATION_PERMISSION_REQUEST_CODE = 123
 
-class DocumentActivity : AppCompatActivity() {
+class DocumentActivity//Check if the user has logged in
+    () : AppCompatActivity() {
     //binding
     lateinit var DocumentBinding: ActivityDocumentBinding
     //username
@@ -232,6 +233,10 @@ class DocumentActivity : AppCompatActivity() {
             vc.hoo.R.anim.slide_out_left
         )
     }
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
+
 }
 /*
 References

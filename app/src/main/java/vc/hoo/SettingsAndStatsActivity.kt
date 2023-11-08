@@ -142,6 +142,9 @@ class SettingsAndStatsActivity : AppCompatActivity() {
             R.anim.slide_out_left
         )
     }
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
 }
 /*
 References

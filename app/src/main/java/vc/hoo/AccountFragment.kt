@@ -45,6 +45,7 @@ class AccountFragment : Fragment() {
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)
+            //sharedPref.edit().clear().apply()
         }
 
         return AccountBinding.root

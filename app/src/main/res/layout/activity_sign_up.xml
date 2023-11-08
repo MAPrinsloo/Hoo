@@ -23,10 +23,28 @@
             app:title="@string/SignUp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+            android:layout_width="@dimen/TextInpuLayoutWidth"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:hint="@string/prompt_email"
+            app:boxStrokeColor="@color/md_theme_light_primary"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/md_theme_light_primary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tietEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text|textEmailAddress"
+                android:singleLine="true"
+                android:textColor="@color/md_theme_light_onSurface" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilUsername"
             android:layout_width="@dimen/TextInpuLayoutWidth"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:hint="@string/Username"
             app:boxStrokeColor="@color/md_theme_light_primary"
             app:errorEnabled="true"

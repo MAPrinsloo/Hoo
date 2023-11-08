@@ -4,13 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import vc.hoo.databinding.ActivityLoginBinding
 
 
 class LoginActivity : AppCompatActivity() {
     lateinit var LoginBinding: ActivityLoginBinding
+    private lateinit var auth: FirebaseAuth
     //----------------------------------------------------------------------------------------//
     //OnCreate()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +24,11 @@ class LoginActivity : AppCompatActivity() {
         //initialize db
         FirebaseApp.initializeApp(this)
         setContentView(LoginView)
-
+        auth = FirebaseAuth.getInstance()
+        overridePendingTransition(
+            vc.hoo.R.anim.slide_in_left,
+            vc.hoo.R.anim.slide_out_right
+        )
         //----------------------------------------------------------------------------------------//
         //Sign Up button clicked
         LoginBinding.btnSignUp.setOnClickListener() {
@@ -58,30 +65,33 @@ class LoginActivity : AppCompatActivity() {
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     //User document exists
-                    val userPassword = documentSnapshot.getString("password")
-                    if (password == userPassword) {
-                        val sharedPref = getSharedPreferences("username", Context.MODE_PRIVATE)
-                        val editor = sharedPref.edit()
-                        editor.putString("username", username)
-                        editor.apply()
-                        val intent = Intent(this, DocumentActivity::class.java)
-                        intent.putExtra("username", username)
-                        startActivity(intent)
-                        overridePendingTransition(
-                            vc.hoo.R.anim.slide_in_right,
-                            vc.hoo.R.anim.slide_out_left
-                        )
-                    } else {
-                        //On Login Failure
+                    val userEmail = documentSnapshot.getString("email") ?: ""
+                    auth.signInWithEmailAndPassword(userEmail,password).addOnCompleteListener { task ->
+                        if(task.isSuccessful){
+                            val sharedPref = getSharedPreferences("username", Context.MODE_PRIVATE)
+                            val editor = sharedPref.edit()
+                            editor.putString("username", username)
+                            editor.apply()
+                            val intent = Intent(this, DocumentActivity::class.java)
+                            intent.putExtra("username", username)
+                            startActivity(intent)
+                            overridePendingTransition(
+                                vc.hoo.R.anim.slide_in_right,
+                                vc.hoo.R.anim.slide_out_left
+                            )
+                            finish()
+                        }
+                    }.addOnFailureListener { exception ->
                         binding.tilUsername.error = "Combination incorrect"
                         binding.tilPassword.error = "Combination incorrect"
                     }
-                } else {
-                    //On Login Failure
+                }
+                else
+                {
                     binding.tilUsername.error = "Combination incorrect"
                     binding.tilPassword.error = "Combination incorrect"
                 }
-            }
+        }
     }
 
     //----------------------------------------------------------------------------------------//
@@ -117,6 +127,9 @@ class LoginActivity : AppCompatActivity() {
             vc.hoo.R.anim.slide_out_right
         )
     }
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
 }
 /*
 References

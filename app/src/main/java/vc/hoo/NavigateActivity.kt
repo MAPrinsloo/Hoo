@@ -614,6 +614,9 @@ class NavigateActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
+    //----------------------------------------------------------------------------------------//
+    //Disable Backpressing
+    override fun onBackPressed() {}
 }
 /*
 References
