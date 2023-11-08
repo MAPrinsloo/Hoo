@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import vc.hoo.databinding.ActivityDocumentBinding
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
@@ -34,6 +35,8 @@ class DocumentActivity : AppCompatActivity() {
     lateinit var DocumentBinding: ActivityDocumentBinding
     //username
     private lateinit var Username: String
+    //Capture geoPoint
+    private lateinit var Coordinates: GeoPoint
 
     //----------------------------------------------------------------------------------------//
     //OnCreate()
@@ -110,7 +113,8 @@ class DocumentActivity : AppCompatActivity() {
                         locationAddress,
                         numBirds.toString(),
                         birdName,
-                        DocumentBinding.ibtnPhoto.drawable.toBitmap()
+                        DocumentBinding.ibtnPhoto.drawable.toBitmap(),
+                        this.Coordinates
                     )
                     DocumentBinding.ibtnPhoto.setImageDrawable(tempIbtnDrawable)
                 }
@@ -134,6 +138,7 @@ class DocumentActivity : AppCompatActivity() {
                     if (location != null) {
                         val latitude = location.latitude
                         val longitude = location.longitude
+                        this.Coordinates = GeoPoint(latitude,longitude)
                         getAddressFromCoordinates(
                             applicationContext,
                             latitude,
@@ -160,7 +165,8 @@ class DocumentActivity : AppCompatActivity() {
         location: String,
         num_birds: String,
         bird_name: String,
-        picture: Bitmap
+        picture: Bitmap,
+        coordinates: GeoPoint
     ) {
         val db = FirebaseFirestore.getInstance()
         val timesheetCollection =
@@ -179,7 +185,8 @@ class DocumentActivity : AppCompatActivity() {
             "location" to location,
             "num_birds" to num_birds,
             "bird_name" to bird_name,
-            "picture" to encodedImage
+            "picture" to encodedImage,
+            "coordinates" to coordinates
         )
         //saving the data.
         timesheetCollection.add(timesheetData)
