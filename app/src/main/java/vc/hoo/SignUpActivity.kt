@@ -1,5 +1,6 @@
 package vc.hoo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -102,11 +103,13 @@ class SignUpActivity : AppCompatActivity() {
         Email: String,
         binding: ActivitySignUpBinding)
     {
-        var least_spotted: String = ""
-        var max_distance: Int = 2
-        var metric: Boolean = true
-        var most_spotted: String = ""
-        var total_spotted: Int = 0
+        val least_spotted: String = ""
+        val least_spotted_num: Long = 99999
+        val most_spotted: String = ""
+        val most_spotted_num: Long = 0
+        val max_distance: Int = 2
+        val metric: Boolean = true
+        val total_spotted: Int = 0
         val db = FirebaseFirestore.getInstance()
 
         //Firestore path.
@@ -117,11 +120,13 @@ class SignUpActivity : AppCompatActivity() {
                 //Create user if unique
                 val userData = hashMapOf(
                     "least_spotted" to least_spotted,
-                    "max_distance" to max_distance,
-                    "metric" to metric,
+                    "least_spotted_num" to least_spotted_num,
                     "most_spotted" to most_spotted,
-                    "email" to Email,
-                    "total_spotted" to total_spotted
+                    "most_spotted_num" to most_spotted_num,
+                    "total_spotted" to total_spotted,
+                    "metric" to metric,
+                    "max_distance" to max_distance,
+                    "email" to Email
                 )
                 userDocRef.set(userData)
             } else {
@@ -155,6 +160,7 @@ class SignUpActivity : AppCompatActivity() {
     }
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {}
 }
 /*

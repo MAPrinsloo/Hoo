@@ -40,6 +40,8 @@
     <string name="mapbox_access_token">pk.eyJ1IjoicG1vbmV5IiwiYSI6ImNsbWtodXJtZjAyYnIyaWw4MTJkMGljcjAifQ.Mh08MpxLsPdflc-ddnT53g</string>
     <string name="Hotspot">Bird Hotspots</string>
     <string name="BirdsObservations">Birds Observations</string>
+    <string name="Amount">Amount:</string>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

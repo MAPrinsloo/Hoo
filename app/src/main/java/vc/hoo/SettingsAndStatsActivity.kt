@@ -1,5 +1,6 @@
 package vc.hoo
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
@@ -19,6 +20,7 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     lateinit var Username: String
     var Metric: Boolean = true
     var MaxDistance: Int = 0
+
     //----------------------------------------------------------------------------------------//
     //OnCreate()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,10 +91,21 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     //Loads the settings from the db
     private fun loadSettings() {
         val SettingsCollection = db.collection("/$Username/")
+        var leastSpotted = ""
+        var leastSpottedAmount = ""
+        var mostSpotted = ""
+        var mostSpottedAmount = ""
+        var totalSpotted = ""
         SettingsCollection.get().addOnSuccessListener { querySnapshot ->
             for (document in querySnapshot) {
                 Metric = document["metric"] as? Boolean ?: true
                 val tempDistance = document["max_distance"] as? Long ?: 2.0
+                leastSpotted = document["least_spotted"] as? String?: ""
+                leastSpottedAmount = (document["least_spotted_num"] as? Long?: 0).toString()
+                mostSpotted = document["most_spotted"] as? String?: ""
+                mostSpottedAmount = (document["most_spotted_num"] as? Long?: 0).toString()
+                totalSpotted = (document["total_spotted"] as? Long?: 0).toString()
+
                 MaxDistance = tempDistance.toInt()
             }
             if (Metric == false) {
@@ -104,7 +117,17 @@ class SettingsAndStatsActivity : AppCompatActivity() {
             SettStatsBinding.tietMaxDistance.setText(MaxDistance.toString())
             SettStatsBinding.cbMetric.isChecked = Metric
             SettStatsBinding.cbImperial.isChecked = !Metric
+            loadStatistics(leastSpotted,leastSpottedAmount,mostSpotted,mostSpottedAmount,totalSpotted)
         }
+    }
+    private fun loadStatistics(leastSpotted:String, leastSpottedAmount: String, mostSpotted:String, mostSpottedAmount: String, totalSpotted:String){
+        SettStatsBinding.tvLeastSpotted.text = resources.getString(R.string.LeastSpottedBird) + " " + leastSpotted
+        SettStatsBinding.tvLeastSpottedAmount.text = resources.getString(R.string.Amount) + " " + leastSpottedAmount
+
+        SettStatsBinding.tvMostSpotted.text = resources.getString(R.string.MostSpottedBird) + " " + mostSpotted
+        SettStatsBinding.tvMostSpottedAmount.text = resources.getString(R.string.Amount) + " " + mostSpottedAmount
+
+        SettStatsBinding.tvTotalBirds.text = resources.getString(R.string.TotalBirdsSpotted) + " " + totalSpotted
     }
     //----------------------------------------------------------------------------------------//
     //Save settings to the db
@@ -135,7 +158,7 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
+        loadSettings()
         // Set custom enter animation when the activity is relaunched
         overridePendingTransition(
             R.anim.slide_in_right,
@@ -144,6 +167,7 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     }
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {}
 }
 /*
