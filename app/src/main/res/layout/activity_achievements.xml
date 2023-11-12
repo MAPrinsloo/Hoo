@@ -18,6 +18,13 @@
         app:title="@string/Achievements"
         app:titleCentered="true" />
 
+    <ListView
+        android:id="@+id/lvAchievements"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mtAchievements"
+        android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/flMenuSideSheet"
         android:layout_width="match_parent"

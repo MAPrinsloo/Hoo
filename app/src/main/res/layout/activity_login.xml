@@ -16,6 +16,7 @@
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/hoologobg" />
 
         <com.google.android.material.textfield.TextInputLayout

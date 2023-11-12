@@ -69,6 +69,8 @@ import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider
 import com.mapbox.navigation.ui.maps.route.RouteLayerConstants.TOP_LEVEL_ROUTE_LINE_LAYER_ID
 import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowApi
 import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowView
+import com.mapbox.navigation.ui.maps.route.arrow.model.ClearArrowsValue
+import com.mapbox.navigation.ui.maps.route.arrow.model.RemoveArrowValue
 import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView
@@ -268,10 +270,11 @@ class NavigateActivity : AppCompatActivity() {
             }
         }
         //--------------------------------------------------------------------------------------------//
-        //
+        //Switch clicked
         NavigateBinding.msMapView.setOnClickListener()
         {
             LoadCurrentLocation(NavigateBinding);
+            mapboxNavigation.setNavigationRoutes(emptyList<DirectionsRoute>().toNavigationRoutes())
         }
         //--------------------------------------------------------------------------------------------//
         //ibtnCenterOnUser click
@@ -336,7 +339,7 @@ class NavigateActivity : AppCompatActivity() {
             listOf(
                 ReplayRouteMapper.mapToUpdateLocation(
                     Date().time.toDouble(),
-                    Point.fromLngLat(-122.4192, 37.7627)
+                    Point.fromLngLat(this.originLocation.longitude, this.originLocation.latitude)
                 )
             )
         )
@@ -453,7 +456,7 @@ class NavigateActivity : AppCompatActivity() {
         }
     }
     //--------------------------------------------------------------------------------------------//
-    //
+    //Clears all the markers on the map
     private fun clearAllMarkers() {
         for (marker in AllPoints) {
             marker.deleteAll()
@@ -486,7 +489,7 @@ class NavigateActivity : AppCompatActivity() {
         }
     }
     //--------------------------------------------------------------------------------------------//
-    //
+    //Checks the database for bird observation coordinates and adds them to the map
     fun AddObservationMarkers() {
         BirdNavPointList.clear()
         var arrDbEntries = arrayListOf<String>()
@@ -612,10 +615,13 @@ class NavigateActivity : AppCompatActivity() {
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        NavigateBinding.flAccountSideSheet.isVisible = false
+        NavigateBinding.flMenuSideSheet.isVisible = false
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {}
 }
 /*

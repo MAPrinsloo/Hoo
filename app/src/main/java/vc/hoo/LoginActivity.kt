@@ -1,5 +1,6 @@
 package vc.hoo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -44,8 +45,10 @@ class LoginActivity : AppCompatActivity() {
         //Login button clicked
         LoginBinding.btnLogin.setOnClickListener()
         {
-            var username = LoginBinding.tietUsername.text.toString()
-            var password = LoginBinding.tietPassword.text.toString()
+            //var username = LoginBinding.tietUsername.text.toString()
+            //var password = LoginBinding.tietPassword.text.toString()
+            var username = "pablo"
+            var password = "testing#"
 
             if (ValidateInputs(username, password, LoginBinding) == true) {
                 loginUser(username, password, LoginBinding)
@@ -129,6 +132,7 @@ class LoginActivity : AppCompatActivity() {
     }
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {}
 }
 /*

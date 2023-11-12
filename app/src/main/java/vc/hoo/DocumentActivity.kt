@@ -333,7 +333,8 @@ class DocumentActivity//Check if the user has logged in
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
+        DocumentBinding.flAccountSideSheet.isVisible = false
+        DocumentBinding.flMenuSideSheet.isVisible = false
         // Set custom enter animation when the activity is relaunched
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_right,

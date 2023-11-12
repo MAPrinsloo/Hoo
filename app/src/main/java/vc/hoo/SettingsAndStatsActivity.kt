@@ -159,6 +159,8 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         loadSettings()
+        SettStatsBinding.flAccountSideSheet.isVisible = false
+        SettStatsBinding.flMenuSideSheet.isVisible = false
         // Set custom enter animation when the activity is relaunched
         overridePendingTransition(
             R.anim.slide_in_right,

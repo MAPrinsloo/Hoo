@@ -4,4 +4,5 @@
     <dimen name="ButtonWidth">100dp</dimen>
     <dimen name="MapHeight">350dp</dimen>
     <dimen name="GeneralMarginTop">50dp</dimen>
+    <dimen name="AchListHeight">75dp</dimen>
 </resources>

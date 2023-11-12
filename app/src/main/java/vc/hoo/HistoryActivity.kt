@@ -1,5 +1,6 @@
 package vc.hoo
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -45,7 +46,7 @@ class HistoryActivity : AppCompatActivity() {
         populateDisplayArrays()
         //populate adatper
         val displayAdapter =
-            AchListAdapter(this, title = bird_name, description = description, imgid = picture)
+            HistListAdapter(this, title = bird_name, description = description, imgid = picture)
         HistoryBinding.lvHistory.adapter = displayAdapter
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_right,
@@ -148,7 +149,8 @@ class HistoryActivity : AppCompatActivity() {
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
+        HistoryBinding.flAccountSideSheet.isVisible = false
+        HistoryBinding.flMenuSideSheet.isVisible = false
         // Set custom enter animation when the activity is relaunched
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_right,
@@ -158,6 +160,7 @@ class HistoryActivity : AppCompatActivity() {
 
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {}
 
 
