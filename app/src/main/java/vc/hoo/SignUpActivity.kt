@@ -104,7 +104,7 @@ class SignUpActivity : AppCompatActivity() {
         binding: ActivitySignUpBinding)
     {
         val least_spotted: String = ""
-        val least_spotted_num: Long = 99999
+        val least_spotted_num: Long = 0
         val most_spotted: String = ""
         val most_spotted_num: Long = 0
         val max_distance: Int = 2

@@ -109,8 +109,6 @@ class SettingsAndStatsActivity : AppCompatActivity() {
                 MaxDistance = tempDistance.toInt()
             }
             if (Metric == false) {
-                //if user wants to use imperial, convert db from km to miles for display in text box
-                MaxDistance = (MaxDistance * 0.612371).toInt()
                 SettStatsBinding.tilMaxDistance.suffixText = "Miles"
             }
 
@@ -136,11 +134,6 @@ class SettingsAndStatsActivity : AppCompatActivity() {
 
         val newMetric = Metric
         var newMaxDistance = SettStatsBinding.tietMaxDistance.text.toString().toInt()
-
-        if (Metric == false) {
-            //if user want to save imperial, convert to km using 1.60934
-            newMaxDistance = (newMaxDistance * 1.60934).toInt()
-        }
 
         val updates = hashMapOf(
             "metric" to newMetric,

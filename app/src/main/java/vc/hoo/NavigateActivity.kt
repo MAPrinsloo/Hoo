@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -16,7 +17,6 @@ import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -67,11 +67,6 @@ import com.mapbox.navigation.core.trip.session.LocationObserver
 import com.mapbox.navigation.core.trip.session.RouteProgressObserver
 import com.mapbox.navigation.ui.maps.location.NavigationLocationProvider
 import com.mapbox.navigation.ui.maps.route.RouteLayerConstants.TOP_LEVEL_ROUTE_LINE_LAYER_ID
-import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowApi
-import com.mapbox.navigation.ui.maps.route.arrow.api.MapboxRouteArrowView
-import com.mapbox.navigation.ui.maps.route.arrow.model.ClearArrowsValue
-import com.mapbox.navigation.ui.maps.route.arrow.model.RemoveArrowValue
-import com.mapbox.navigation.ui.maps.route.arrow.model.RouteArrowOptions
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineApi
 import com.mapbox.navigation.ui.maps.route.line.api.MapboxRouteLineView
 import com.mapbox.navigation.ui.maps.route.line.model.MapboxRouteLineOptions
@@ -84,6 +79,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import kotlin.concurrent.thread
+import android.util.Base64
 
 
 var mapView: com.mapbox.maps.MapView? = null
@@ -126,17 +122,6 @@ class NavigateActivity : AppCompatActivity() {
     private val routeLineApi: MapboxRouteLineApi by lazy {
         MapboxRouteLineApi(options)
     }
-    private val routeArrowApi: MapboxRouteArrowApi by lazy {
-        MapboxRouteArrowApi()
-    }
-    private val routeArrowOptions by lazy {
-        RouteArrowOptions.Builder(this)
-            .withAboveLayerId(TOP_LEVEL_ROUTE_LINE_LAYER_ID)
-            .build()
-    }
-    private val routeArrowView: MapboxRouteArrowView by lazy {
-        MapboxRouteArrowView(routeArrowOptions)
-    }
     private val routesObserver: RoutesObserver = RoutesObserver { routeUpdateResult ->
         routeLineApi.setNavigationRoutes(
             routeUpdateResult.navigationRoutes
@@ -158,10 +143,6 @@ class NavigateActivity : AppCompatActivity() {
             mapView?.getMapboxMap()?.getStyle()?.apply {
                 routeLineView.renderRouteLineUpdate(this, result)
             }
-        }
-        val arrowUpdate = routeArrowApi.addUpcomingManeuverArrow(routeProgress)
-        mapView?.getMapboxMap()?.getStyle()?.apply {
-            routeArrowView.renderManeuverUpdate(this, arrowUpdate)
         }
     }
     private val locationObserver = object : LocationObserver {
@@ -209,11 +190,12 @@ class NavigateActivity : AppCompatActivity() {
     //Origin location with temp points
     private var originLocation: Location = Location("userLocation").apply {
         longitude = -122.4192
-        latitude = 37.7627
+        latitude = 27.7627
         bearing = 10f
     }
     //Destination location with temp points
     private var destination = Point.fromLngLat(-122.4106, 37.7676)
+    private var currentLocationLoaded = false
 
     //----------------------------------------------------------------------------------------//
     //OnCreate()
@@ -234,8 +216,7 @@ class NavigateActivity : AppCompatActivity() {
         Username = intent.getStringExtra("username").toString()
         //initialise db
         db = Firebase.firestore
-        //load the max distance pref from db.
-        LoadMaxDistance()
+
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         mapView = findViewById(R.id.mvMap)
         //load current location on map startup
@@ -243,7 +224,8 @@ class NavigateActivity : AppCompatActivity() {
             Style.MAPBOX_STREETS,
             object : Style.OnStyleLoaded {
                 override fun onStyleLoaded(style: Style) {
-                    LoadCurrentLocation(NavigateBinding)
+                    //load the max distance pref from db.
+                    LoadMaxDistance()
                 }
             }
         )
@@ -270,8 +252,16 @@ class NavigateActivity : AppCompatActivity() {
             }
         }
         //--------------------------------------------------------------------------------------------//
-        //Switch clicked
+        //Mapview Switch clicked
         NavigateBinding.msMapView.setOnClickListener()
+        {
+            LoadCurrentLocation(NavigateBinding);
+            NavigateBinding.msDetailedView.isEnabled = !NavigateBinding.msDetailedView.isEnabled
+            mapboxNavigation.setNavigationRoutes(emptyList<DirectionsRoute>().toNavigationRoutes())
+        }
+        //--------------------------------------------------------------------------------------------//
+        //Detail Switch clicked
+        NavigateBinding.msDetailedView.setOnClickListener()
         {
             LoadCurrentLocation(NavigateBinding);
             mapboxNavigation.setNavigationRoutes(emptyList<DirectionsRoute>().toNavigationRoutes())
@@ -330,7 +320,14 @@ class NavigateActivity : AppCompatActivity() {
             enabled = true
         }!!
 
-        replayOriginLocation()
+        if (this.currentLocationLoaded == false)
+        {
+            LoadCurrentLocation(NavigateBinding)
+        }
+        else
+        {
+            replayOriginLocation()
+        }
     }
     //----------------------------------------------------------------------------------------//
     //https://docs.mapbox.com/android/navigation/examples/render-route-line/
@@ -417,17 +414,20 @@ class NavigateActivity : AppCompatActivity() {
     }
     //--------------------------------------------------------------------------------------------//
     //Adds a marker to the map using lng and lat
-    private fun addAnnotationToMap(lng: Double, lat: Double, markerDrawable: Int) {
-        bitmapFromDrawableRes(this@NavigateActivity, markerDrawable)?.let {
-            val annotationApi = mapView?.annotations
-            val pointAnnotationManager = annotationApi?.createPointAnnotationManager()
-            val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
-                .withPoint(Point.fromLngLat(lng, lat))
-                .withIconImage(it)
-            pointAnnotationManager?.create(pointAnnotationOptions)
-            if (pointAnnotationManager != null) {
-                AllPoints.add(pointAnnotationManager)
-            }
+    private fun addAnnotationToMap(lng: Double, lat: Double, markerDrawable: Drawable?) {
+        val annotationApi = mapView?.annotations
+        val pointAnnotationManager = annotationApi?.createPointAnnotationManager()
+        val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
+            .withPoint(Point.fromLngLat(lng, lat))
+
+        if (markerDrawable != null) {
+            convertDrawableToBitmap(markerDrawable)?.let { pointAnnotationOptions.withIconImage(it) }
+        }
+
+        pointAnnotationManager?.create(pointAnnotationOptions)
+
+        if (pointAnnotationManager != null) {
+            AllPoints.add(pointAnnotationManager)
         }
     }
     //--------------------------------------------------------------------------------------------//
@@ -481,7 +481,8 @@ class NavigateActivity : AppCompatActivity() {
                     birdNavObject.Lng = lngTemp
 
                     BirdNavPointList.add(birdNavObject)
-                    addAnnotationToMap(lngTemp, latTemp, R.drawable.red_marker)
+                    val markerDrawable = ContextCompat.getDrawable(this,  R.drawable.red_marker) ?: throw IllegalStateException("Drawable not found")
+                    addAnnotationToMap(lngTemp, latTemp, markerDrawable)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -509,17 +510,45 @@ class NavigateActivity : AppCompatActivity() {
                     if (entry != null) {
                         val birdNavObject = BirdNavPoints()
                         val birdGeoPoint = (entry["coordinates"] as? GeoPoint ?: GeoPoint(0.0,0.0))
+                        val encodedPicture = (entry["picture"] as? String ?: "")
+
                         var tempGeoPoint: GeoPoint = birdGeoPoint
                         birdNavObject.Lat = tempGeoPoint.latitude
                         birdNavObject.Lng = tempGeoPoint.longitude
 
                         BirdNavPointList.add(birdNavObject)
-                        addAnnotationToMap(tempGeoPoint.longitude, tempGeoPoint.latitude, R.drawable.bird_map_icon)
+                        var markerDrawable: Drawable
+                        if(NavigateBinding.msDetailedView.isChecked == true)
+                        {
+                            markerDrawable = decodePicture(encodedPicture)
+                        }
+                        else
+                        {
+                            markerDrawable = ContextCompat.getDrawable(this, R.drawable.bird_map_icon) ?: throw IllegalStateException("Drawable not found")
+                        }
+                        addAnnotationToMap(tempGeoPoint.longitude, tempGeoPoint.latitude, markerDrawable)
                     }
                 }
             }
         }
     }
+    private fun decodePicture(encodedPicture: String): Drawable {
+        // Decode the base64 string into a bitmap
+        val decodedBytes = Base64.decode(encodedPicture, Base64.DEFAULT)
+        val originalBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+
+        // Resize the bitmap to 96x96
+        val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 96, 96, true)
+
+        // Create a drawable from the resized bitmap
+        val resizedDrawable = BitmapDrawable(resources, resizedBitmap)
+
+        // If you need to recycle the originalBitmap, uncomment the following line
+        // originalBitmap.recycle()
+
+        return resizedDrawable
+    }
+
     //--------------------------------------------------------------------------------------------//
     //Loads the users current location onto the map
     private fun LoadCurrentLocation(binding: ActivityNavigateBinding) {
@@ -558,11 +587,6 @@ class NavigateActivity : AppCompatActivity() {
                                         .build()
 
                                     //Set camera position
-                                    Toast.makeText(
-                                        this@NavigateActivity,
-                                        locationAddress,
-                                        Toast.LENGTH_LONG
-                                    ).show()
 
                                     mapView?.getMapboxMap()?.setCamera(cameraLocation)
                                     thread {
@@ -575,13 +599,16 @@ class NavigateActivity : AppCompatActivity() {
                                             return@thread
                                         }
                                         runOnUiThread { if (NavigateBinding.msMapView.isChecked){AddObservationMarkers()}else{ consumeJson(hotspot)} }
+                                        replayOriginLocation()
                                     }
                                     //add user location to map
-                                    addAnnotationToMap(location.longitude, location.latitude, R.drawable.user_map_icon)
+                                    val markerDrawable = ContextCompat.getDrawable(this@NavigateActivity, R.drawable.user_map_icon) ?: throw IllegalStateException("Drawable not found")
+                                    addAnnotationToMap(location.longitude, location.latitude, markerDrawable)
                                     //user location is also the origin location
                                     originLocation.longitude = location.longitude
                                     originLocation.latitude = location.latitude
 
+                                    currentLocationLoaded = true
                                 }
                             }
                         )
@@ -602,22 +629,28 @@ class NavigateActivity : AppCompatActivity() {
         val SettingsCollection = db.collection("/$Username/")
         SettingsCollection.get().addOnSuccessListener { querySnapshot ->
             for (document in querySnapshot) {
-                val maxDistance = document["max_distance"] as? Long ?: 2.0
-
+                var maxDistance = document["max_distance"] as? Long ?: 2.0
+                val metric = document["metric"] as? Boolean ?: true
+                if (metric == false)
+                {
+                    maxDistance = maxDistance.toInt() * 0.612371
+                }
                 val sharedPref = getSharedPreferences("username", MODE_PRIVATE)
                 val editor = sharedPref.edit()
-                editor.putString("maxDistance", maxDistance.toInt().toString())
+                editor.putString("maxDistance", maxDistance.toString())
                 editor.apply()
+                LoadCurrentLocation(NavigateBinding)
             }
         }
     }
     //--------------------------------------------------------------------------------------------//
     //Runs animation on new intent
-    override fun onNewIntent(intent: Intent) {
+    override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         NavigateBinding.flAccountSideSheet.isVisible = false
         NavigateBinding.flMenuSideSheet.isVisible = false
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        LoadMaxDistance()
     }
     //----------------------------------------------------------------------------------------//
     //Disable Backpressing

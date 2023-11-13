@@ -93,6 +93,7 @@ class HistoryActivity : AppCompatActivity() {
     private fun populateDisplayArrays() {
         clearAllData()
         var arrDbEntries = arrayListOf<String>()
+        Username = intent.getStringExtra("username").toString()
 
         //Firebase directory
         val historyCollection = db.collection("/$Username/user_details/history/")
@@ -149,8 +150,13 @@ class HistoryActivity : AppCompatActivity() {
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        Username = intent.getStringExtra("username").toString()
+        clearAllData()
+        populateDisplayArrays()
         HistoryBinding.flAccountSideSheet.isVisible = false
         HistoryBinding.flMenuSideSheet.isVisible = false
+        HistoryBinding.lvHistory.isVisible = false
+        HistoryBinding.lvHistory.isVisible = true
         // Set custom enter animation when the activity is relaunched
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_right,

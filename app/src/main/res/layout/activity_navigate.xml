@@ -50,6 +50,31 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="@string/BirdsObservations" />
+
+        <TextView
+            android:id="@+id/tvDetailedUnchecked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/BirdSimple" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/msDetailedView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:checked="false"
+            android:enabled="false"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tvDetailedChecked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/BirdDetailed" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,7 +89,9 @@
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" >
+
+        </com.mapbox.maps.MapView>
 
         <ImageButton
             android:id="@+id/ibtnCenterOnUser"

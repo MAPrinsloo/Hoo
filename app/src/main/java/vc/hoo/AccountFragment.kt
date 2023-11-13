@@ -18,16 +18,16 @@ class AccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //Holds the users username
-        val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
-        //If the username is not gotten then return ""
-        val username = sharedPref.getString("username", "")
         //Binding
         AccountBinding = FragmentAccountBinding.inflate(inflater, container, false)
 
         //----------------------------------------------------------------------------------------//
         //Opens the AchievementsActivity
         AccountBinding.btnAcntAchievements.setOnClickListener {
+            //Holds the users username
+            val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
+            //If the username is not gotten then return ""
+            val username = sharedPref.getString("username", "")
             val intent = Intent(requireContext(), AchievementsActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)
@@ -35,6 +35,10 @@ class AccountFragment : Fragment() {
         //----------------------------------------------------------------------------------------//
         //Opens the SettingsAndStatsActivity
         AccountBinding.btnAcntSettStats.setOnClickListener {
+            //Holds the users username
+            val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
+            //If the username is not gotten then return ""
+            val username = sharedPref.getString("username", "")
             val intent = Intent(requireContext(), SettingsAndStatsActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)
@@ -42,10 +46,10 @@ class AccountFragment : Fragment() {
         //----------------------------------------------------------------------------------------//
         //Opens LoginActivity
         AccountBinding.btnAcntSignOut.setOnClickListener {
+            requireContext().getSharedPreferences("username", Context.MODE_PRIVATE).edit().remove("username").apply()
+            requireContext().getSharedPreferences("maxDistance", Context.MODE_PRIVATE).edit().remove("maxDistance").apply()
             val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.putExtra("username", username)
             startActivity(intent)
-            //sharedPref.edit().clear().apply()
         }
 
         return AccountBinding.root

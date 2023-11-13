@@ -7,6 +7,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.provider.MediaStore
@@ -39,6 +40,7 @@ class DocumentActivity//Check if the user has logged in
     private lateinit var Username: String
     //Capture geoPoint
     private lateinit var Coordinates: GeoPoint
+    private lateinit var tempIbtnDrawable: Drawable
 
     //----------------------------------------------------------------------------------------//
     //OnCreate()
@@ -49,7 +51,9 @@ class DocumentActivity//Check if the user has logged in
         DocumentBinding = ActivityDocumentBinding.inflate(layoutInflater)
         val DocumentView = DocumentBinding.root
         //Holds the temporary drawable for IbtnDrawable - reset to this after capture
-        val tempIbtnDrawable = DocumentBinding.ibtnPhoto.drawable
+        tempIbtnDrawable = DocumentBinding.ibtnPhoto.drawable
+        //clear inputs on load
+        clearInputs()
         //Camera usage
         val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
         {
@@ -108,7 +112,15 @@ class DocumentActivity//Check if the user has logged in
         DocumentBinding.btnCapture.setOnClickListener()
         {
             var birdName = DocumentBinding.tietBirdName.text.toString()
-            var numBirds = DocumentBinding.tietNumBirds.text.toString().toInt()
+            var numBirds :Int
+            try
+            {
+                numBirds = DocumentBinding.tietNumBirds.text.toString().toInt()
+            }
+            catch (e: java.lang.NumberFormatException)
+            {
+                numBirds = 0
+            }
             if (ValidateInputs(birdName, numBirds, DocumentBinding) == true) {
                 getAddress { locationAddress ->
                     save(
@@ -118,12 +130,21 @@ class DocumentActivity//Check if the user has logged in
                         DocumentBinding.ibtnPhoto.drawable.toBitmap(),
                         this.Coordinates
                     )
-                    DocumentBinding.ibtnPhoto.setImageDrawable(tempIbtnDrawable)
+                    //Clear inputs
+                    clearInputs()
                 }
             }
         }
         //Showing the page
         setContentView(DocumentView)
+    }
+    //----------------------------------------------------------------------------------------//
+    //clears on the user inputs in the activity
+    private fun clearInputs()
+    {
+        DocumentBinding.ibtnPhoto.setImageDrawable(tempIbtnDrawable)
+        DocumentBinding.tietBirdName.text = null
+        DocumentBinding.tietNumBirds.text = null
     }
     //----------------------------------------------------------------------------------------//
     //get the users current address
@@ -193,8 +214,6 @@ class DocumentActivity//Check if the user has logged in
         saveBirdData(bird_name, num_birds.toLong(), birdData)
 
         saveHistoryData(timesheetData)
-
-        updateStats(num_birds.toLong())
     }
     //----------------------------------------------------------------------------------------//
     //Saving Bird data
@@ -217,6 +236,7 @@ class DocumentActivity//Check if the user has logged in
                 // Bird document doesn't exist, create it
                 birdName.set(birdData)
             }
+            updateStats(num_birds)
         }
     }
     //----------------------------------------------------------------------------------------//
@@ -235,7 +255,7 @@ class DocumentActivity//Check if the user has logged in
             }
     }
     //----------------------------------------------------------------------------------------//
-    //
+    //collects the required db data used to update stats
     private fun updateStats(num_birds: Long)
     {
         val db = FirebaseFirestore.getInstance()
@@ -244,7 +264,7 @@ class DocumentActivity//Check if the user has logged in
         var least_spotted_num: Long = 999
         var most_spotted = ""
         var most_spotted_num: Long = 0
-        var total_spotted: Long = 0
+
         //Firebase directory
         val birdCollection = db.collection("/$Username/user_details/birds/")
 
@@ -261,21 +281,23 @@ class DocumentActivity//Check if the user has logged in
                     val entry = documentSnapshot.data
 
                     if (entry != null) {
+                        //documented num birds
                         val currentNumBirds = documentSnapshot.getLong("num_birds") ?: 0
                         val currentBirdName = documentSnapshot.getString("bird_name") ?: ""
 
+                        //update most_spotted
                         if (currentNumBirds > most_spotted_num)
                         {
                             most_spotted = currentBirdName as String
                             most_spotted_num = currentNumBirds
                         }
-                        //
+                        //update least_spotted
                         if (currentNumBirds < least_spotted_num)
                         {
                             least_spotted = currentBirdName as String
                             least_spotted_num = currentNumBirds
                         }
-                        var dbsize = arrDbEntries.count()
+                        //when the data is finished being collected
                         if (++count == arrDbEntries.count())
                         {
                             onDataCollectonFinish(most_spotted,most_spotted_num,least_spotted,least_spotted_num,num_birds)
@@ -285,8 +307,9 @@ class DocumentActivity//Check if the user has logged in
             }
         }
     }
-    //
-    //
+    //----------------------------------------------------------------------------------------//
+    //Call when the data is finished collecting for update stats
+    //updates the users stats in the database
     private fun onDataCollectonFinish(most_spotted: String, most_spotted_num: Long,least_spotted: String,least_spotted_num: Long, num_birds: Long)
     {
         val db = FirebaseFirestore.getInstance()
@@ -324,7 +347,7 @@ class DocumentActivity//Check if the user has logged in
             inputsAreValid = false
         }
         if ((numBirds <= 0) == true) {
-            binding.tilBirdName.error = "Field cannot be empty"
+            binding.tilNumBirds.error = "Field cannot be empty"
             inputsAreValid = false
         }
         return inputsAreValid
@@ -333,6 +356,8 @@ class DocumentActivity//Check if the user has logged in
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        Username = intent.getStringExtra("username").toString()
+        clearInputs()
         DocumentBinding.flAccountSideSheet.isVisible = false
         DocumentBinding.flMenuSideSheet.isVisible = false
         // Set custom enter animation when the activity is relaunched

@@ -124,51 +124,39 @@
             android:layout_marginTop="10dp"
             android:text="@string/Statistics" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvLeastSpotted"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:text="@string/LeastSpottedBird"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvLeastSpotted"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/LeastSpottedBird"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvLeastSpottedAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Amount"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvLeastSpottedAmount"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Amount"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMostSpotted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:text="@string/MostSpottedBird"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvMostSpotted"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/MostSpottedBird"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvMostSpottedAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Amount"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvMostSpottedAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Amount"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvTotalBirds"

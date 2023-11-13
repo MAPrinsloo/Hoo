@@ -18,9 +18,6 @@ class MenuFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //Retrieve share preferences
-        val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
-        val username = sharedPref.getString("username", "")
 
         //binding
         MenuBinding = FragmentMenuBinding.inflate(inflater, container, false)
@@ -28,6 +25,9 @@ class MenuFragment() : Fragment() {
         //On Document Click
         MenuBinding.btnMenuDocument.setOnClickListener {
             // Create an Intent to navigate to the SignUpActivity
+            //Retrieve share preferences
+            val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
+            val username = sharedPref.getString("username", "")
             val intent = Intent(requireContext(), DocumentActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)
@@ -36,6 +36,9 @@ class MenuFragment() : Fragment() {
         //On Navigate Click
         MenuBinding.btnMenuNavigate.setOnClickListener {
             // Create an Intent to navigate to the SignUpActivity
+            //Retrieve share preferences
+            val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
+            val username = sharedPref.getString("username", "")
             val intent = Intent(requireContext(), NavigateActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)
@@ -44,6 +47,9 @@ class MenuFragment() : Fragment() {
         //On History Click
         MenuBinding.btnMenuHistory.setOnClickListener {
             // Create an Intent to navigate to the SignUpActivity
+            //Retrieve share preferences
+            val sharedPref = requireContext().getSharedPreferences("username", Context.MODE_PRIVATE)
+            val username = sharedPref.getString("username", "")
             val intent = Intent(requireContext(), HistoryActivity::class.java)
             intent.putExtra("username", username)
             startActivity(intent)

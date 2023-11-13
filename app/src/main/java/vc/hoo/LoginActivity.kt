@@ -25,6 +25,10 @@ class LoginActivity : AppCompatActivity() {
         //initialize db
         FirebaseApp.initializeApp(this)
         setContentView(LoginView)
+
+        //LoginBinding.tietUsername.setText("pablo")
+        //LoginBinding.tietPassword.setText("testing#")
+
         auth = FirebaseAuth.getInstance()
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_left,
@@ -45,10 +49,8 @@ class LoginActivity : AppCompatActivity() {
         //Login button clicked
         LoginBinding.btnLogin.setOnClickListener()
         {
-            //var username = LoginBinding.tietUsername.text.toString()
-            //var password = LoginBinding.tietPassword.text.toString()
-            var username = "pablo"
-            var password = "testing#"
+            var username = LoginBinding.tietUsername.text.toString()
+            var password = LoginBinding.tietPassword.text.toString()
 
             if (ValidateInputs(username, password, LoginBinding) == true) {
                 loginUser(username, password, LoginBinding)
