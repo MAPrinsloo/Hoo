@@ -40,6 +40,7 @@ class DocumentActivity//Check if the user has logged in
     private lateinit var Username: String
     //Capture geoPoint
     private lateinit var Coordinates: GeoPoint
+    //temp drawable for camera image button
     private lateinit var tempIbtnDrawable: Drawable
 
     //----------------------------------------------------------------------------------------//
@@ -398,4 +399,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
