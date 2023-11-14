@@ -12,11 +12,17 @@ import java.net.URL
 
 class NetworkUtil {
 
+    //Max distance used for filtering radius of url request
     private var MaxDistance: String = "2"
+    //Ebird url to request
     private lateinit var EBIRD_URL: String
+    //Firebase db
     lateinit private var db: FirebaseFirestore
+    //Username of current user
     lateinit var Username: String
+    //Latitude point of which to base radius off of
     lateinit var Lat: String
+    //Longitude point of which to base radius off of
     lateinit var Lng: String
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -35,9 +41,10 @@ class NetworkUtil {
         Username = sharedPreferences.getString("username", "").toString()
         Lat = sharedPreferences.getString("lat", "").toString()
         Lng = sharedPreferences.getString("lng", "").toString()
+        //get max distance from shared preference
         MaxDistance = sharedPreferences.getString("maxDistance", "2").toString()
         //pass values into url
-        // dist is radius around location for ebird hotspots
+        //dist is radius around location for ebird hotspots
         EBIRD_URL =
             "https://api.ebird.org/v2/ref/hotspot/geo?lat=$Lat&lng=$Lng&dist=$MaxDistance&fmt=json"
 
@@ -82,4 +89,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
