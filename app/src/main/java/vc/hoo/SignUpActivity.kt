@@ -15,6 +15,7 @@ import vc.hoo.databinding.ActivitySignUpBinding
 class SignUpActivity : AppCompatActivity() {
     //binding
     lateinit var SignUpBinding: ActivitySignUpBinding
+    //Firebase auth service
     private lateinit var auth: FirebaseAuth
     //----------------------------------------------------------------------------------------//
     //OnCreate()
@@ -24,6 +25,7 @@ class SignUpActivity : AppCompatActivity() {
         val SignUpView = SignUpBinding.root
         FirebaseApp.initializeApp(this)
         setContentView(SignUpView)
+        //Initialise the auth service
         auth = FirebaseAuth.getInstance()
 
         //----------------------------------------------------------------------------------------//
@@ -135,12 +137,14 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
     //----------------------------------------------------------------------------------------//
-    //
+    //Creates a new account for firebase auth and
+    //creates a new directory in the firebase db for data storage
     private fun SignUp(email: String,username: String,password: String)
     {
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener { task ->
             if(task.isSuccessful){
                 CreateAccount(username, email, SignUpBinding)
+                //setting the shared preference
                 val sharedPref = getSharedPreferences("username", Context.MODE_PRIVATE)
                 val editor = sharedPref.edit()
                 val intent = Intent(this, DocumentActivity::class.java)
@@ -188,4 +192,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
