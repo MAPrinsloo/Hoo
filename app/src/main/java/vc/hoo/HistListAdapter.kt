@@ -10,8 +10,11 @@ import android.widget.TextView
 
 class HistListAdapter(
     private val context: Activity,
+    //Holds titles of the stored bird observations
     private val title: ArrayList<String>,
+    //Holds descriptions of the stored bird observations
     private val description: ArrayList<String>,
+    //Holds images of the stored bird observations
     private val imgid: ArrayList<Bitmap>
 ) : ArrayAdapter<String>(context, R.layout.custom_hist_list, title) {
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -54,4 +57,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */

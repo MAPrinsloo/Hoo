@@ -14,6 +14,7 @@ import vc.hoo.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
     lateinit var LoginBinding: ActivityLoginBinding
+    //Firebase auth service
     private lateinit var auth: FirebaseAuth
     //----------------------------------------------------------------------------------------//
     //OnCreate()
@@ -25,11 +26,9 @@ class LoginActivity : AppCompatActivity() {
         //initialize db
         FirebaseApp.initializeApp(this)
         setContentView(LoginView)
-
-        //LoginBinding.tietUsername.setText("pablo")
-        //LoginBinding.tietPassword.setText("testing#")
-
+        //initialise the auth service for the db
         auth = FirebaseAuth.getInstance()
+
         overridePendingTransition(
             vc.hoo.R.anim.slide_in_left,
             vc.hoo.R.anim.slide_out_right
@@ -162,4 +161,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
