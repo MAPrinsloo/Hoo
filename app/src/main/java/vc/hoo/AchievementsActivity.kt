@@ -30,6 +30,8 @@ class AchievementsActivity : AppCompatActivity() {
     var ach_discription = arrayListOf<String>()
     var achImage = arrayListOf<Drawable>()
     var achStarsImage = arrayListOf<Drawable>()
+    //store the drawables for the star states 0-3 stars
+    //store in order within array
     val starImages = arrayListOf<Drawable>()
 
     //----------------------------------------------------------------------------------------//
@@ -51,15 +53,17 @@ class AchievementsActivity : AppCompatActivity() {
         starImages.add(resources.getDrawable(R.drawable.achivement_star_3, null))
 
         populateDisplayArrays()
-        //populate adatper
+
+        //populate adapter
         val displayAdapter =
             AchListAdapter(this, title = ach_name, description = ach_discription, achImgId = achImage, starImgId = achStarsImage)
+        //set the adapter of the list view
         AchievementsBinding.lvAchievements.adapter = displayAdapter
+
         overridePendingTransition(
             R.anim.slide_in_right,
             R.anim.slide_out_left
         )
-
 
         //----------------------------------------------------------------------------------------//
         //Nav Menu
@@ -90,9 +94,7 @@ class AchievementsActivity : AppCompatActivity() {
     //----------------------------------------------------------------------------------------//
     //Retrieves data from db and populates the corresponding arrays
     private fun populateDisplayArrays() {
-        var arrDbEntries = arrayListOf<String>()
         //Firebase directory
-
         val achivementCollection = db.collection("/$Username/")
         val birdCollection = db.collection("/$Username/user_details/birds/")
         var mostSpottedAmount = 0
@@ -104,19 +106,21 @@ class AchievementsActivity : AppCompatActivity() {
                 mostSpottedAmount = (document["most_spotted_num"] as? Long?: 0).toInt()
                 totalSpotted = (document["total_spotted"] as? Long?: 0).toInt()
             }
-            //Bird specialist
+            //Bird specialist achievement
             checkBirdSpecialistAch(most_spotted_num = mostSpottedAmount)
 
-            //Target acquired
+            //Target acquired achievement
             checkTargetAcquiredAch(total_spotted = totalSpotted)
             AchievementsBinding.lvAchievements.isVisible = false
             AchievementsBinding.lvAchievements.isVisible = true
         }
+        //collect the amount of birds withing the "birds" directory
+        //used for variety spotter
         birdCollection.get().addOnSuccessListener { querySnapshot ->
             for (document in querySnapshot) {
                 numTypesSpotted++
             }
-            //Variety spotter
+            //Variety spotter achievement
             checkVarietySpotterAch(num_types_spotted = numTypesSpotted)
             AchievementsBinding.lvAchievements.isVisible = false
             AchievementsBinding.lvAchievements.isVisible = true
@@ -126,25 +130,27 @@ class AchievementsActivity : AppCompatActivity() {
     //Checks the data entered against the achievement requirements
     private fun checkBirdSpecialistAch(most_spotted_num: Int) {
         ach_name.add("Bird Specialist")
-
-        // Default values
         var description = ""
 
+        //0 Stars
         if(most_spotted_num < 5)
         {
             description = "Spot 1 type of bird 5 times. $most_spotted_num / 5"
             achStarsImage.add(starImages[0])
         }
+        //1 Star
         else if(most_spotted_num < 10)
         {
             description = "Spot 1 type of bird 10 times. $most_spotted_num / 10"
             achStarsImage.add(starImages[1])
         }
+        //2 Stars
         else if(most_spotted_num < 15)
         {
             description = "Spot 1 type of bird 15 times. $most_spotted_num / 15"
             achStarsImage.add(starImages[2])
         }
+        //3 Stars
         else if(most_spotted_num >= 15)
         {
             description = "You have spotted 1 type of bird 15 times."
@@ -160,25 +166,27 @@ class AchievementsActivity : AppCompatActivity() {
     private fun checkTargetAcquiredAch(total_spotted: Int)
     {
         ach_name.add("Target Acquired")
-
-        // Default values
         var description = ""
 
+        //0 Stars
         if(total_spotted < 3)
         {
             description = "Spot 3 birds. $total_spotted / 3"
             achStarsImage.add(starImages[0])
         }
+        //1 Star
         else if(total_spotted < 15)
         {
             description = "Spot 15 birds. $total_spotted / 15"
             achStarsImage.add(starImages[1])
         }
+        //2 Stars
         else if(total_spotted < 30)
         {
             description = "Spot 30 birds. $total_spotted / 30"
             achStarsImage.add(starImages[2])
         }
+        //3 Stars
         else if(total_spotted >= 30)
         {
             description = "You have spotted 30 birds."
@@ -196,21 +204,25 @@ class AchievementsActivity : AppCompatActivity() {
         ach_name.add("Variety Spotter")
         var description = ""
 
+        //0 Stars
         if(num_types_spotted < 5)
         {
             description = "Spot 5 different types of birds. $num_types_spotted / 5"
             achStarsImage.add(starImages[0])
         }
+        //1 Star
         else if(num_types_spotted < 10)
         {
             description = "Spot 10 different types of birds. $num_types_spotted / 10"
             achStarsImage.add(starImages[1])
         }
+        //2 Stars
         else if(num_types_spotted < 15)
         {
             description = "Spot 15 different types of birds. $num_types_spotted / 15"
             achStarsImage.add(starImages[2])
         }
+        //3 Stars
         else if(num_types_spotted >= 15)
         {
             description = "You have spotted 15 different types of birds."
@@ -262,4 +274,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
