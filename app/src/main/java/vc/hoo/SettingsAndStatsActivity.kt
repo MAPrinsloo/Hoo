@@ -17,8 +17,11 @@ import vc.hoo.databinding.ActivitySettingsAndStatsBinding
 class SettingsAndStatsActivity : AppCompatActivity() {
     lateinit var SettStatsBinding: ActivitySettingsAndStatsBinding
     lateinit private var db: FirebaseFirestore
+    //Logged in users username
     lateinit var Username: String
+    //If the measuring distance will be in KM or Miles
     var Metric: Boolean = true
+    //Max distance the user is willing to travel
     var MaxDistance: Int = 0
 
     //----------------------------------------------------------------------------------------//
@@ -33,6 +36,7 @@ class SettingsAndStatsActivity : AppCompatActivity() {
 
         //Initialize db
         db = Firebase.firestore
+        //Load the setttings
         loadSettings()
 
         overridePendingTransition(
@@ -81,14 +85,15 @@ class SettingsAndStatsActivity : AppCompatActivity() {
             }
         }
         //----------------------------------------------------------------------------------------//
-        //
+        //Save button clicked
         SettStatsBinding.btnSaveSettings.setOnClickListener()
         {
             saveSettings()
         }
     }
     //----------------------------------------------------------------------------------------//
-    //Loads the settings from the db
+    //Loads the settings from the db onto the activity
+    //Retrieves info from db to populate the stats of the activity
     private fun loadSettings() {
         val SettingsCollection = db.collection("/$Username/")
         var leastSpotted = ""
@@ -111,13 +116,16 @@ class SettingsAndStatsActivity : AppCompatActivity() {
             if (Metric == false) {
                 SettStatsBinding.tilMaxDistance.suffixText = "Miles"
             }
-
+            //Set activity inputs to the stored settings
             SettStatsBinding.tietMaxDistance.setText(MaxDistance.toString())
             SettStatsBinding.cbMetric.isChecked = Metric
             SettStatsBinding.cbImperial.isChecked = !Metric
+            //load the stats onto the activity
             loadStatistics(leastSpotted,leastSpottedAmount,mostSpotted,mostSpottedAmount,totalSpotted)
         }
     }
+    //----------------------------------------------------------------------------------------//
+    //Load the stats onto the activity
     private fun loadStatistics(leastSpotted:String, leastSpottedAmount: String, mostSpotted:String, mostSpottedAmount: String, totalSpotted:String){
         SettStatsBinding.tvLeastSpotted.text = resources.getString(R.string.LeastSpottedBird) + " " + leastSpotted
         SettStatsBinding.tvLeastSpottedAmount.text = resources.getString(R.string.Amount) + " " + leastSpottedAmount
@@ -151,6 +159,7 @@ class SettingsAndStatsActivity : AppCompatActivity() {
     //Runs animation on new intent
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        //loads the new settings on reopen
         loadSettings()
         SettStatsBinding.flAccountSideSheet.isVisible = false
         SettStatsBinding.flMenuSideSheet.isVisible = false
@@ -190,4 +199,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
