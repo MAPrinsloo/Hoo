@@ -195,6 +195,7 @@ class NavigateActivity : AppCompatActivity() {
     }
     //Destination location with temp points
     private var destination = Point.fromLngLat(-122.4106, 37.7676)
+    //bool Value for if the users current location has been loaded or not
     private var currentLocationLoaded = false
 
     //----------------------------------------------------------------------------------------//
@@ -252,7 +253,7 @@ class NavigateActivity : AppCompatActivity() {
             }
         }
         //--------------------------------------------------------------------------------------------//
-        //Mapview Switch clicked
+        //Mapview Switch clicked - clears the map routes
         NavigateBinding.msMapView.setOnClickListener()
         {
             LoadCurrentLocation(NavigateBinding);
@@ -261,6 +262,7 @@ class NavigateActivity : AppCompatActivity() {
         }
         //--------------------------------------------------------------------------------------------//
         //Detail Switch clicked
+        //When enabled will prompt LoadCurrentLocation to use images from db as marker drawables
         NavigateBinding.msDetailedView.setOnClickListener()
         {
             LoadCurrentLocation(NavigateBinding);
@@ -319,7 +321,7 @@ class NavigateActivity : AppCompatActivity() {
             addOnIndicatorPositionChangedListener(onPositionChangedListener)
             enabled = true
         }!!
-
+        //if the users location has not been loaded then load it first
         if (this.currentLocationLoaded == false)
         {
             LoadCurrentLocation(NavigateBinding)
@@ -413,7 +415,7 @@ class NavigateActivity : AppCompatActivity() {
         )
     }
     //--------------------------------------------------------------------------------------------//
-    //Adds a marker to the map using lng and lat
+    //Adds a marker to the map using lng, lat and the drawable to display
     private fun addAnnotationToMap(lng: Double, lat: Double, markerDrawable: Drawable?) {
         val annotationApi = mapView?.annotations
         val pointAnnotationManager = annotationApi?.createPointAnnotationManager()
@@ -430,10 +432,6 @@ class NavigateActivity : AppCompatActivity() {
             AllPoints.add(pointAnnotationManager)
         }
     }
-    //--------------------------------------------------------------------------------------------//
-    //https://docs.mapbox.com/android/maps/examples/default-point-annotation/
-    private fun bitmapFromDrawableRes(context: Context, @DrawableRes resourceId: Int) =
-        convertDrawableToBitmap(AppCompatResources.getDrawable(context, resourceId))
     //--------------------------------------------------------------------------------------------//
     //https://docs.mapbox.com/android/maps/examples/default-point-annotation/
     private fun convertDrawableToBitmap(sourceDrawable: Drawable?): Bitmap? {
@@ -532,23 +530,21 @@ class NavigateActivity : AppCompatActivity() {
             }
         }
     }
+    //--------------------------------------------------------------------------------------------//
+    //Decodes a base64 encoded string to drawable
     private fun decodePicture(encodedPicture: String): Drawable {
-        // Decode the base64 string into a bitmap
+        //Decode the base64 string into a bitmap
         val decodedBytes = Base64.decode(encodedPicture, Base64.DEFAULT)
         val originalBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
 
-        // Resize the bitmap to 96x96
+        //Resize the bitmap to 96x96, standard size of the nav markers
         val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 96, 96, true)
 
-        // Create a drawable from the resized bitmap
+        //Create a drawable from the resized bitmap
         val resizedDrawable = BitmapDrawable(resources, resizedBitmap)
-
-        // If you need to recycle the originalBitmap, uncomment the following line
-        // originalBitmap.recycle()
 
         return resizedDrawable
     }
-
     //--------------------------------------------------------------------------------------------//
     //Loads the users current location onto the map
     private fun LoadCurrentLocation(binding: ActivityNavigateBinding) {
@@ -633,8 +629,11 @@ class NavigateActivity : AppCompatActivity() {
                 val metric = document["metric"] as? Boolean ?: true
                 if (metric == false)
                 {
+                    //if metric is false then convert to imperial
+                    //the radius call works in KM for the NetworkUtil.kt usage
                     maxDistance = maxDistance.toInt() * 0.612371
                 }
+                //update shared preferences
                 val sharedPref = getSharedPreferences("username", MODE_PRIVATE)
                 val editor = sharedPref.edit()
                 editor.putString("maxDistance", maxDistance.toString())
@@ -682,4 +681,13 @@ https://docs.mapbox.com/android/navigation/guides/get-started/initialization/#cr
 https://docs.mapbox.com/android/navigation/guides/ui-components/route-line/
 https://docs.mapbox.com/android/navigation/guides/get-started/install/
 https://docs.mapbox.com/android/navigation/guides/migrate-to-v2/#navigationmaproute-was-replaced
+
+Firebase Auth
+https://medium.com/swlh/firebase-authentication-with-kotlin-46da70bf8a4d
+
+Locaton to geopoint
+https://stackoverflow.com/questions/11711147/convert-location-to-geopoint
+
+Disable back button
+https://stackoverflow.com/questions/50720273/how-to-disable-back-home-multitask-physical-buttons
 */
